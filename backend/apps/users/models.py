@@ -25,7 +25,8 @@ class User(AbstractUser):
         (ROLE_STAFF, "Staff"),
         (ROLE_GUEST, "Guest"),
     )
-
+    
+    #user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)
     designation = models.CharField(max_length=120, blank=True)
     phone = models.CharField(max_length=30, blank=True)

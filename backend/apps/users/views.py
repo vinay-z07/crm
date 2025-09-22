@@ -2,7 +2,9 @@
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
 from django.conf import settings
 from django.urls import reverse
 from .models import User, Department
@@ -57,3 +59,15 @@ class UserViewSet(viewsets.ModelViewSet):
         user.email_verification_token = None
         user.save()
         return Response({"detail": "Email verified. You can login now."})
+
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponse("Login successful!")
+        else:
+            return HttpResponse("Invalid credentials.", status=401)
+    return render(request, "login.html")
